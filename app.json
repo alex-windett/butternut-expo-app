@@ -38,6 +38,14 @@
 		"owner": "windett",
 		"updates": {
 			"url": "https://u.expo.dev/4d787b32-d5b3-477c-940b-5098bed54441"
+		},
+		"cli": {
+			"appVersionSource": "remote"
+		},
+		"build": {
+			"production": {
+				"autoIncrement": true
+			}
 		}
 	}
 }
