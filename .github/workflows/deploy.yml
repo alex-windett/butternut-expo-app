@@ -47,7 +47,6 @@ jobs:
       STRIPE_IE_PUBLISHABLE_KEY: xxxxx
       STRIPE_NL_PUBLISHABLE_KEY: xxxxx
       STRIPE_PL_PUBLISHABLE_KEY: xxxxx
-      STRIPE_PUBLISHABLE_KEY: xxxxx
       STRIPE_GB_PUBLISHABLE_KEY: xxxxx
       SENTRY_AUTH_TOKEN: xxxxx
     steps:
