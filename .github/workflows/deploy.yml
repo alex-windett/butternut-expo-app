@@ -24,7 +24,59 @@ jobs:
       - name: 🧪 Run tests
         run: yarn test
 
-  continuously-deploy:
+  continuously-deploy-butternut:
+    needs: test
+    runs-on: ubuntu-latest
+    concurrency: continuous-deploy-fingerprint-${{ github.event_name != 'pull_request' && 'main' || github.run_id }}
+    permissions:
+      contents: read # Allow checkout
+      pull-requests: write # Allow comments on PRs
+    env:
+      LOAD_STORYBOOK: false
+      API_URL: http://localhost:3000/graphql_v2
+      SENTRY_APP_DSN: xxxx
+      STRIPE_PUBLISHABLE_KEY: xxxx
+      SEGMENT_KEY_DEVELOPMENT: xxxx # this is the dev key, still need to configure
+      SEGMENT_KEY_PRODUCTION: xxxx
+      CONTENTFUL_SPACE_ID: xxxx
+      CONTENTFUL_ACCESS_TOKEN: xxxx
+      CHECK_FOR_APP_UPGRADE_DEVELOPMENT: false
+      APP_UPGRADE_X_API_KEY: xxxx
+      PAYPAL_REDIRECT_URL_PRODUCTION: https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout
+      STRIPE_BE_PUBLISHABLE_KEY: xxxxx
+      STRIPE_IE_PUBLISHABLE_KEY: xxxxx
+      STRIPE_NL_PUBLISHABLE_KEY: xxxxx
+      STRIPE_PL_PUBLISHABLE_KEY: xxxxx
+      STRIPE_PUBLISHABLE_KEY: xxxxx
+      STRIPE_GB_PUBLISHABLE_KEY: xxxxx
+      SENTRY_AUTH_TOKEN: xxxxx
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@main
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Continuously Deploy
+        uses: expo/expo-github-action/continuous-deploy-fingerprint@main
+        env:
+          BRAND: butternut
+        with:
+          profile: ${{ github.event_name != 'pull_request' && 'production' || 'development' }}
+          branch: ${{ github.event_name != 'pull_request' && 'production' || 'development' }}
+
+  continuously-deploy-psibufet:
     needs: test
     runs-on: ubuntu-latest
     concurrency: continuous-deploy-fingerprint-${{ github.event_name != 'pull_request' && 'main' || github.run_id }}
@@ -51,6 +103,8 @@ jobs:
 
       - name: Continuously Deploy
         uses: expo/expo-github-action/continuous-deploy-fingerprint@main
+        env:
+          BRAND: psibufet
         with:
-          profile: ${{ github.event_name != 'pull_request' && 'production' || 'development' }}
-          branch: ${{ github.event_name != 'pull_request' && 'production' || 'development' }}
+          profile: ${{ github.event_name != 'pull_request' && 'production-psibufet' || 'development' }}
+          branch: ${{ github.event_name != 'pull_request' && 'production-psibufet' || 'development' }}
